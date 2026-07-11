@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
+const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors({
