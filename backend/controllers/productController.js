@@ -217,6 +217,7 @@ exports.createProduct = async (req, res) => {
     // Handle local file upload
   // Upload image to Cloudinary
 if (req.file) {
+  console.log("CLOUDINARY CODE RUNNING");
   const result = await cloudinary.uploader.upload(req.file.path, {
     folder: "mern-products",
     resource_type: "image",
@@ -310,6 +311,7 @@ if (req.file) {
   if (existingProduct.cloudinaryPublicId) {
     await cloudinary.uploader.destroy(existingProduct.cloudinaryPublicId);
   }
+console.log("CLOUDINARY UPDATE RUNNING");
 
   const result = await cloudinary.uploader.upload(req.file.path, {
     folder: "mern-products",
