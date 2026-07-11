@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ===========================
+   Hero Section Animations
+   =========================== */
+
+/* Keyframe: Slide up with fade in */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation classes for hero elements */
+.hero-animate {
+  opacity: 0;
+  animation: slideUpFadeIn 0.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+/* Stagger delays for sequential animation */
+.hero-animate-1 {
+  animation-delay: 0.2s;
+}
+
+.hero-animate-2 {
+  animation-delay: 0.4s;
+}
+
+.hero-animate-3 {
+  animation-delay: 0.6s;
+}
+
+/* Performance optimization for animations */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
