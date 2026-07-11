@@ -9,11 +9,11 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
-const port = process.env.PORT || 4000;
+
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'https://cartify-shop1.onrender.com'],
   credentials: true,
 }));
 app.use(express.json());
