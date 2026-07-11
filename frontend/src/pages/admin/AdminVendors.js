@@ -25,6 +25,19 @@ function AdminVendors() {
   });
 
   useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        setLoading(true);
+        const res = await adminService.getVendors({ page, limit: 10, status });
+        setVendors(res.data.vendors || []);
+      } catch (err) {
+        setToast({ message: 'Failed to fetch vendors', type: 'error' });
+        setTimeout(() => setToast({ message: '', type: '' }), 2000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchVendors();
   }, [page, status]);
 
