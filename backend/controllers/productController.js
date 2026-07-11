@@ -216,8 +216,12 @@ exports.createProduct = async (req, res) => {
 
     // Handle local file upload
     if (req.file) {
-      productData.image = `/uploads/${req.file.filename}`;
-    }
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "mern-products",
+  });
+
+  productData.image = result.secure_url;
+}
     // Handle old Cloudinary image uploads if needed
     else if (req.files && req.files.length > 0) {
       const imageFiles = req.files;
@@ -292,13 +296,14 @@ exports.updateProduct = async (req, res) => {
     };
 
     // Handle local file upload
-    if (req.file) {
-      // Delete old local image if it exists
-      if (existingProduct.image) {
-        deleteLocalImage(existingProduct.image);
-      }
-      updateData.image = `/uploads/${req.file.filename}`;
-    }
+// Upload image to Cloudinary
+if (req.file) {
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "mern-products",
+  });
+
+  updateData.image = result.secure_url;
+}
     // Handle old Cloudinary image uploads if needed
     else if (req.files && req.files.length > 0) {
       const uploadedImages = [];
