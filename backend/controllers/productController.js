@@ -215,12 +215,20 @@ exports.createProduct = async (req, res) => {
     };
 
     // Handle local file upload
-    if (req.file) {
+  // Upload image to Cloudinary
+if (req.file) {
   const result = await cloudinary.uploader.upload(req.file.path, {
     folder: "mern-products",
+    resource_type: "image",
   });
 
   productData.image = result.secure_url;
+  productData.cloudinaryPublicId = result.public_id;
+
+  // Delete temporary local file
+  if (fs.existsSync(req.file.path)) {
+    fs.unlinkSync(req.file.path);
+  }
 }
     // Handle old Cloudinary image uploads if needed
     else if (req.files && req.files.length > 0) {
@@ -298,11 +306,23 @@ exports.updateProduct = async (req, res) => {
     // Handle local file upload
 // Upload image to Cloudinary
 if (req.file) {
+  // Delete old Cloudinary image
+  if (existingProduct.cloudinaryPublicId) {
+    await cloudinary.uploader.destroy(existingProduct.cloudinaryPublicId);
+  }
+
   const result = await cloudinary.uploader.upload(req.file.path, {
     folder: "mern-products",
+    resource_type: "image",
   });
 
   updateData.image = result.secure_url;
+  updateData.cloudinaryPublicId = result.public_id;
+
+  // Delete temporary local file
+  if (fs.existsSync(req.file.path)) {
+    fs.unlinkSync(req.file.path);
+  }
 }
     // Handle old Cloudinary image uploads if needed
     else if (req.files && req.files.length > 0) {
