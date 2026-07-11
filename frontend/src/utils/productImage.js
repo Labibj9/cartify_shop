@@ -76,9 +76,9 @@ const normalizeImageUrl = (value) => {
     return `https:${url}`;
   }
 
-  if (url.startsWith('/')) {
-    return `http://localhost:5001${url}`;
-  }
+if (url.startsWith('/')) {
+  return `${process.env.REACT_APP_API_URL.replace('/api', '')}${url}`;
+}
 
   return `https://${url}`;
 };
