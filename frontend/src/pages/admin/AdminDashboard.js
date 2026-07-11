@@ -8,6 +8,8 @@ function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const { selectedCurrency } = useSelector((state) => state.currency);
+  const { user } = useSelector((state) => state.auth);
+  const firstName = user?.name?.split(' ')[0] || 'Admin';
 
   useEffect(() => {
     fetchStats();
@@ -78,7 +80,7 @@ function AdminDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
+        <h2 className="text-3xl font-bold text-gray-900">Hello, {firstName}</h2>
         <p className="text-gray-600 mt-1">Welcome to your admin panel</p>
       </div>
 

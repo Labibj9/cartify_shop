@@ -5,6 +5,8 @@ import { formatPrice } from '../../utils/currency';
 
 function VendorDashboard() {
   const { selectedCurrency } = useSelector((state) => state.currency);
+  const { user } = useSelector((state) => state.auth);
+  const firstName = user?.name?.split(' ')[0] || 'Vendor';
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalRevenue: 0,
@@ -61,7 +63,7 @@ function VendorDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-amazon-blue">Seller Dashboard</h2>
+        <h2 className="text-3xl font-bold text-amazon-blue">Hello, {firstName}</h2>
         <p className="text-gray-600 mt-1">Overview of your store, orders, and inventory.</p>
       </div>
 

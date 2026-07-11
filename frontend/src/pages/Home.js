@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Home() {
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const firstName = user?.name?.split(' ')[0];
   const featuredDeals = [
     {
       title: 'Smart Home Finds',
@@ -45,7 +48,9 @@ function Home() {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-amazon-blue to-blue-900 text-white py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="hero-animate hero-animate-1 text-5xl md:text-6xl font-bold mb-4">Welcome to Cartify</h1>
+          <h1 className="hero-animate hero-animate-1 text-5xl md:text-6xl font-bold mb-4">
+            {isAuthenticated && firstName ? `Hello, ${firstName}` : 'Welcome to Cartify'}
+          </h1>
           <p className="hero-animate hero-animate-2 text-xl md:text-2xl mb-8 text-gray-100">
             Discover amazing products at unbeatable prices
           </p>
