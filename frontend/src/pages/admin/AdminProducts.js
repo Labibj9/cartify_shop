@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { adminService } from '../../services/api';
 import Toast from '../../components/Toast';
@@ -18,21 +18,22 @@ function AdminProducts() {
   const [uploadPreview, setUploadPreview] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [page, status, search, selectedCurrency]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const res = await adminService.getAllProducts({ page, limit: 20, status, search });
       setProducts(res.data.products || []);
     } catch (err) {
-      showToast('Failed to fetch products', 'error');
+      setToast({ message: 'Failed to fetch products', type: 'error' });
+      setTimeout(() => setToast({ message: '', type: '' }), 2000);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, status]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts, selectedCurrency]);
 
   const showToast = (message, type) => {
     setToast({ message, type });

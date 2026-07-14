@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { orderService, paymentService } from '../services/api';
@@ -38,7 +38,7 @@ function Checkout() {
     razorpayKeyId.length > 8 &&
     !razorpayKeyId.includes('rzp_test_key');
 
-  const validateCheckoutInput = () => {
+  const validateCheckoutInput = useCallback(() => {
     if (!isAuthenticated) {
       setPayPalError('Please login to continue payment.');
       navigate('/login');
@@ -65,7 +65,7 @@ function Checkout() {
 
     setPayPalError('');
     return true;
-  };
+  }, [address, cart, isAuthenticated, navigate]);
 
   useEffect(() => {
     if (!hasValidPayPalClientId) {
@@ -102,7 +102,7 @@ function Checkout() {
       setPayPalDebug('Script load error from paypal.com SDK endpoint.');
     };
     document.body.appendChild(script);
-  }, [paypalClientId, hasValidPayPalClientId]);
+  }, [paypalClientId, hasValidPayPalClientId, selectedPaymentMethod]);
 
   useEffect(() => {
     const scriptId = 'razorpay-sdk-script';
@@ -218,6 +218,7 @@ function Checkout() {
     navigate,
     selectedPaymentMethod,
     hasValidPayPalClientId,
+    validateCheckoutInput,
   ]);
 
   const handleCodOrder = async () => {

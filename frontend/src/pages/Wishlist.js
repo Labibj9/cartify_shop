@@ -22,27 +22,32 @@ function Wishlist() {
     setTimeout(() => setToast({ message: '', type: 'success' }), 2200);
   };
 
-  const loadWishlist = async () => {
-    try {
-      const res = await wishlistService.getWishlist();
-      const products = (res.data?.wishlist?.items || [])
-        .map((entry) => entry.product)
-        .filter(Boolean);
-      dispatch(setWishlist(products));
-    } catch (err) {
-      showToast(err.response?.data?.message || 'Failed to fetch wishlist', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+
+    const loadWishlist = async () => {
+      try {
+        const res = await wishlistService.getWishlist();
+        const products = (res.data?.wishlist?.items || [])
+          .map((entry) => entry.product)
+          .filter(Boolean);
+        dispatch(setWishlist(products));
+      } catch (err) {
+        setToast({
+          message: err.response?.data?.message || 'Failed to fetch wishlist',
+          type: 'error',
+        });
+        setTimeout(() => setToast({ message: '', type: 'success' }), 2200);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadWishlist();
-  }, [isAuthenticated, selectedCurrency]);
+  }, [dispatch, isAuthenticated, navigate, selectedCurrency]);
 
   const handleAddToCart = async (product) => {
     try {

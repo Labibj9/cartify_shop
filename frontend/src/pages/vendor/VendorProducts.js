@@ -24,6 +24,39 @@ function VendorProducts() {
   });
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await vendorService.getMyProducts({ limit: 100 });
+        setProducts(res.data.products || res.data.data?.products || res.data || []);
+      } catch (err) {
+        setToast({
+          message: err.response?.data?.message || 'Unable to load products.',
+          type: 'error',
+        });
+        setTimeout(() => setToast({ message: '', type: '' }), 2200);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryService.getCategories();
+        const tree = res.data.data || [];
+        const flat = [];
+        const walk = (nodes, depth = 0) => {
+          (nodes || []).forEach((node) => {
+            flat.push({ _id: node._id, name: (depth ? '— '.repeat(depth) : '') + node.name });
+            if (node.children && node.children.length) walk(node.children, depth + 1);
+          });
+        };
+        walk(tree);
+        setCategories(flat);
+      } catch (err) {
+        console.error('Failed to load categories', err);
+      }
+    };
+
     fetchProducts();
     fetchCategories();
   }, []);
@@ -41,24 +74,6 @@ function VendorProducts() {
       showToast(err.response?.data?.message || 'Unable to load products.', 'error');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const res = await categoryService.getCategories();
-      const tree = res.data.data || [];
-      const flat = [];
-      const walk = (nodes, depth = 0) => {
-        (nodes || []).forEach((n) => {
-          flat.push({ _id: n._id, name: (depth ? '— '.repeat(depth) : '') + n.name });
-          if (n.children && n.children.length) walk(n.children, depth + 1);
-        });
-      };
-      walk(tree);
-      setCategories(flat);
-    } catch (err) {
-      console.error('Failed to load categories', err);
     }
   };
 

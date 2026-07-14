@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { productService, categoryService, cartService, wishlistService } from '../services/api';
+import { productService, cartService, wishlistService } from '../services/api';
 import { addItem } from '../redux/cartSlice';
 import { setWishlist, addWishlistItem, removeWishlistItem } from '../redux/wishlistSlice';
 import NestedCategoryFilter from '../components/NestedCategoryFilter';
@@ -27,6 +27,26 @@ function Products() {
   const limit = 12;
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const filters = {
+          search: searchParams.get('search') || '',
+          category: searchParams.get('category') || '',
+          minPrice: searchParams.get('minPrice') || '',
+          maxPrice: searchParams.get('maxPrice') || '',
+          sort: searchParams.get('sort') || '',
+        };
+        const res = await productService.getProducts(page, limit, filters);
+        setProducts(res.data.products);
+        setTotal(res.data.total);
+      } catch (err) {
+        console.error('Failed to fetch products', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProducts();
   }, [searchParams, page, selectedCurrency]);
 
@@ -47,26 +67,6 @@ function Products() {
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: '', type: 'success' }), 2200);
-  };
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const filters = {
-        search: searchParams.get('search') || '',
-        category: searchParams.get('category') || '',
-        minPrice: searchParams.get('minPrice') || '',
-        maxPrice: searchParams.get('maxPrice') || '',
-        sort: searchParams.get('sort') || '',
-      };
-      const res = await productService.getProducts(page, limit, filters);
-      setProducts(res.data.products);
-      setTotal(res.data.total);
-    } catch (err) {
-      console.error('Failed to fetch products', err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleFilter = (key, value) => {
